@@ -25,7 +25,7 @@ export default function ForgotPassword() {
           </div>
         </form>
         <p className="mt-3 text-center redirect">
-          <a href="/" className="redirect">Back to Login</a>
+          <a href="/login" className="redirect">Back to Login</a>
         </p>
       </div>
     </div>

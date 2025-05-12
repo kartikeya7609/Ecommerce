@@ -16,6 +16,7 @@
   border: none;
   background-color: transparent;
 }
+
 :root {
   --bg-primary: #0a0a0a;
   --bg-secondary: #121212;
@@ -480,3 +481,11 @@ footer {
   color: var(--accent-color);
   text-shadow: 0 0 10px var(--accent-color);
 }
+ .redirect {
+  color:#333333;
+  text-decoration: none;
+}
+
+.redirect:hover {
+  color: var(--accent-color);
+  text-shadow: 0 0 10px var(--accent-color);}

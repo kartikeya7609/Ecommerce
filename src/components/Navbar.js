@@ -21,29 +21,15 @@ export default function Navbar() {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="nav-links navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">
+                <a className="nav-link" href="/">
+                  <i className="fas fa-info-circle"></i> About
+                </a>
+                </li>
+                <li className="nav-item">
+                <a className="nav-link active" aria-current="page" href="/home">
                   <i className="fas fa-store"></i> Home
                 </a>
               </li>
-
-              <li className="nav-item">
-                <a className="nav-link" href="/products">
-                  <i className="fas fa-box-open"></i> Products
-                </a>
-              </li>
-
-              <li className="nav-item">
-                <a className="nav-link" href="/deals">
-                  <i className="fas fa-tags"></i> Deals
-                </a>
-              </li>
-
-              <li className="nav-item">
-                <a className="nav-link" href="/contact">
-                  <i className="fas fa-phone"></i> Contact
-                </a>
-              </li>
-
               <li className="nav-item">
                 <a className="nav-link" href="/cart">
                   <i className="fas fa-shopping-cart"></i> Cart
@@ -54,6 +40,17 @@ export default function Navbar() {
                   <i class="fa-solid fa-right-to-bracket"></i> Login
                 </a>
               </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/register">
+                  <i class="fa-solid fa-right-to-bracket"></i> <b>Register Here</b>
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/contact">
+                  <i className="fas fa-phone"></i> Contact
+                </a>
+              </li>
+              
             </ul>
           </div>
         </div>

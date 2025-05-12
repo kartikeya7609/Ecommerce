@@ -6,6 +6,8 @@ export default function Login() {
     <div className="login-container d-flex align-items-center justify-content-center vh-100">
       <div className="login-card p-4 rounded shadow">
         <h2 className="login-title text-center mb-4 ">Login for Faster <br/>Transaction</h2>
+        <p className="login-title text-center mb-4 ">If not registered yet<br/> <a href="/register" className='redirect'>Register Now</a></p>
+
         <form>
           <div className="mb-3">
             <label htmlFor="username" className="form-label">Username</label>
