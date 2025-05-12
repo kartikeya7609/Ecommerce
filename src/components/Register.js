@@ -23,7 +23,7 @@ function Register() {
       alert('Passwords do not match');
       return;
     }
-
+e.preventdefault();
     
     console.log('Form Data Submitted:', formData);
   };
