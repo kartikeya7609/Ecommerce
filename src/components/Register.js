@@ -19,13 +19,12 @@ function Register() {
   const handleSubmit = (e) => {
     e.Default();
 
-    // Basic validation
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match');
       return;
     }
 
-    // Here you can add your logic for handling form submission
+    
     console.log('Form Data Submitted:', formData);
   };
 
