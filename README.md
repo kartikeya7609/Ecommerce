@@ -12,8 +12,11 @@ ShopSphere is a modern ecommerce web application built using React for the front
 - 🔐 User login and registration
 - 📞 Contact page
 - Font Awesome Icons integration
--🛍️Working Add to Cart function.
--interactive About section
+- 🛍️Working Add to Cart function.
+- interactive About section
+- added special page for each product it is interactive too.
+- added toastify things
+
 ---
 
 ## 🧰 Tech Stack
@@ -22,10 +25,10 @@ ShopSphere is a modern ecommerce web application built using React for the front
 - **Icons**: Font Awesome
 - **Deployment**: GitHub/vercel
 
-
 ## 📦 Installation & Running Locally
 
 1. **Clone the repository**
 
 ```bash
 git clone https://github.com/kartikeya7609/Ecommerce.git
+```
