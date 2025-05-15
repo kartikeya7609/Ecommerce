@@ -9,12 +9,14 @@ import Contact from './components/Contact';
 import Products from './components/Products';
 import Home from './components/Home';
 import Cart from './components/Cart';
+import FullPage from './components/FullPage';
 import {
   BrowserRouter as Router,
   Routes,
   Route
 } from 'react-router-dom';
 import React, { useState } from 'react';
+import ProductPage from './components/FullPage';
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
@@ -39,6 +41,7 @@ function App() {
      <Navbar/>
       <Router>
       <Routes>
+<Route path="/product/:id" element={<ProductPage />} />
         <Route path="/" element={<HeroSection />} />
         <Route path="/home" element={<Home />} />
         <Route path="/products"element={<Products />} />

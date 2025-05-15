@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Cart from './Cart';  // Import Cart component
+
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [cartItems, setCartItems] = useState([]);  // Cart state for storing cart items
+  const [cartItems, setCartItems] = useState([]);
+  const [toastVisible, setToastVisible] = useState(false);
+
   const API_URL = 'https://fakestoreapi.com/products';
 
-  // Retrieve cart items from local storage when the component mounts
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem('cartItems'));
     if (storedCartItems) {
@@ -25,29 +26,51 @@ const Home = () => {
       });
   }, []);
 
-  // Add to cart handler and save to local storage
   const addToCart = (product) => {
     const updatedCart = [...cartItems, product];
     setCartItems(updatedCart);
-    localStorage.setItem('cartItems', JSON.stringify(updatedCart));  // Save cart items to localStorage
+    localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 2000);
   };
 
   return (
     <div style={styles.page}>
       <h1 style={styles.heading}>Our Products</h1>
+
+      {/* Toast Message */}
+      <div
+        style={{
+          ...styles.toast,
+          ...(toastVisible ? {} : styles.toastHidden)
+        }}
+      >
+        ✅ Item added to cart!
+      </div>
+
       {loading ? (
         <p style={styles.loading}>Loading products...</p>
       ) : (
         <div style={styles.grid}>
           {products.map(product => (
-            <div key={product.id} style={styles.card}>
+            <div
+              key={product.id}
+              style={styles.card}
+              onClick={() => {
+                window.location.href = `/product/${product.id}`;
+              }}
+            >
               <img src={product.image} alt={product.title} style={styles.image} />
               <h2 style={styles.title}>{product.title}</h2>
-              <p style={styles.description}>{product.description.slice(0, 200)}...</p>
+              <p style={styles.description}>{product.description.slice(0, 100)}...</p>
               <p style={styles.price}>${product.price}</p>
               <button
                 style={styles.button}
-                onClick={() => addToCart(product)}  // Add product to cart
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click
+                  addToCart(product);
+                }}
               >
                 Add To Cart
               </button>
@@ -55,7 +78,7 @@ const Home = () => {
           ))}
         </div>
       )}
-</div>
+    </div>
   );
 };
 
@@ -72,12 +95,11 @@ const styles = {
     textAlign: 'center',
     marginBottom: '3rem',
     color: 'black',
-    textShadow: 'var(--border-color) 0px 0px 10px',
   },
   loading: {
     textAlign: 'center',
     fontSize: '1.2rem',
-    color: 'var(--text-secondary)',
+    color: '#888',
   },
   grid: {
     display: 'grid',
@@ -88,22 +110,25 @@ const styles = {
     backgroundColor: 'white',
     border: '1px solid #ddd',
     borderRadius: '12px',
-    padding: '0.5rem',
+    padding: '1rem',
     textAlign: 'center',
     boxShadow: '0 0 10px #ddd',
+    cursor: 'pointer',
+    transition: 'transform 0.2s ease',
   },
   image: {
     width: '100%',
+    height: '200px',
     objectFit: 'contain',
     borderRadius: '8px',
   },
   title: {
-    fontSize: '1.1rem',
+    fontSize: '1rem',
     margin: '1rem 0 0.5rem',
     color: '#333',
   },
   description: {
-    fontSize: '0.9rem',
+    fontSize: '0.85rem',
     color: '#666',
     marginBottom: '0.5rem',
   },
@@ -114,7 +139,6 @@ const styles = {
     marginBottom: '1rem',
   },
   button: {
-    margin: '0.75rem',
     backgroundColor: '#007bff',
     color: '#ffffff',
     border: 'none',
@@ -122,8 +146,27 @@ const styles = {
     borderRadius: '6px',
     fontSize: '1rem',
     cursor: 'pointer',
-    margin: '5px',
     transition: 'background-color 0.3s ease',
+  },
+  toast: {
+    position: 'fixed',
+    top: '56px',
+    left: 0,
+    width: '100%',
+    backgroundColor: '#28a745',
+    color: '#fff',
+    padding: '12px 0',
+    textAlign: 'center',
+    fontSize: '1.1rem',
+    fontWeight: '600',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+    zIndex: 1050,
+    opacity: 1,
+    transition: 'opacity 0.5s ease-in-out',
+  },
+  toastHidden: {
+    opacity: 0,
+    pointerEvents: 'none',
   },
 };
 

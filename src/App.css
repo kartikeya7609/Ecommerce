@@ -88,7 +88,15 @@
   font-size:5rem;
   color: red;   /* Matches text-danger */
 }
+}@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
+
 :root {
   --bg-primary: #0a0a0a;
   --bg-secondary: #121212;

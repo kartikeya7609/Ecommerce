@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -20,15 +22,21 @@ const Cart = () => {
     );
     setCartItems(updatedCart);
     localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    toast.info("Quantity updated");
   };
 
-const removeItem = (id) => {
-  const updatedCart = cartItems.filter(item => String(item.id) !== String(id));
-  setCartItems(updatedCart);
-  localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-  console.log("Removing item with ID:", id);
+  const removeItem = (id) => {
+    const updatedCart = cartItems.filter(item => String(item.id) !== String(id));
+    setCartItems(updatedCart);
+    localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    toast.error("Item removed");
+  };
 
-};
+  const clearCart = () => {
+    setCartItems([]);
+    localStorage.removeItem('cartItems');
+    toast.warn("Cart cleared");
+  };
 
   const getTotal = () => {
     return cartItems.reduce((total, item) => {
@@ -40,32 +48,34 @@ const removeItem = (id) => {
 
   return (
     <div style={styles.page}>
+      <ToastContainer position="top-right" autoClose={1500} hideProgressBar />
       <h1 style={styles.heading}>🛒 Your Cart</h1>
       {cartItems.length === 0 ? (
         <p style={styles.empty}>Your cart is empty!</p>
       ) : (
-        <div style={styles.grid}>
-          {cartItems.map(item => (
-            <div key={item.id} style={styles.card}>
-              <img src={item.image} alt={item.title} style={styles.image} />
-              <div style={styles.info}>
-                <h3 style={styles.title}>{item.title}</h3>
-                <p style={styles.price}>${item.price} × {item.quantity}</p>
-                <div style={styles.quantityControls}>
-                  <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, -1)}>-</button>
-                  <span style={styles.qtyText}>{item.quantity}</span>
-                  <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, 1)}>+</button>
+        <>
+          <div style={styles.grid}>
+            {cartItems.map(item => (
+              <div key={item.id} style={{ ...styles.card, animation: 'fadeIn 0.4s ease-in-out' }}>
+                <img src={item.image} alt={item.title} style={styles.image} />
+                <div style={styles.info}>
+                  <h3 style={styles.title}>{item.title}</h3>
+                  <p style={styles.price}>${item.price} × {item.quantity}</p>
+                  <div style={styles.quantityControls}>
+                    <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, -1)}>-</button>
+                    <span style={styles.qtyText}>{item.quantity}</span>
+                    <button style={styles.qtyBtn} onClick={() => updateQuantity(item.id, 1)}>+</button>
+                  </div>
+                  <button style={styles.removeBtn} onClick={() => removeItem(item.id)}>🗑 Remove</button>
                 </div>
-                <button style={styles.removeBtn} onClick={() => removeItem(item.id)}>🗑 Remove</button>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-      {cartItems.length > 0 && (
-        <div style={styles.totalContainer}>
-          <h2 style={styles.total}>Total: ${getTotal()}</h2>
-        </div>
+            ))}
+          </div>
+          <div style={styles.totalContainer}>
+            <h2 style={styles.total}>Total: ${getTotal()}</h2>
+            <button style={styles.clearBtn} onClick={clearCart}>🧹 Clear Cart</button>
+          </div>
+        </>
       )}
     </div>
   );
@@ -106,7 +116,6 @@ const styles = {
     alignItems: 'center',
     boxShadow: '0 0 15px #00d0ff33',
     transition: 'transform 0.3s, box-shadow 0.3s',
-    animation: 'fadeIn 0.4s ease-in-out',
   },
   image: {
     width: '110px',
@@ -162,6 +171,17 @@ const styles = {
     cursor: 'pointer',
     transition: 'background 0.3s ease'
   },
+  clearBtn: {
+    backgroundColor: '#ffa500',
+    border: 'none',
+    color: '#fff',
+    padding: '10px 20px',
+    marginTop: '1rem',
+    fontSize: '1rem',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    transition: 'background 0.3s ease'
+  },
   totalContainer: {
     marginTop: '3rem',
     textAlign: 'center',
@@ -176,14 +196,3 @@ const styles = {
 };
 
 export default Cart;
-
-    // {
-    //   "src": "logo192.png",
-    //   "type": "image/png",
-    //   "sizes": "192x192"
-    // },
-    // {
-    //   "src": "logo512.png",
-    //   "type": "image/png",
-    //   "sizes": "512x512"
-    // }
