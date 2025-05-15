@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -17,8 +17,17 @@ function Register() {
   };
 
   const handleSubmit = (e) => {
-    e.Default();
-
+    e.preventDefault();
+    // Password must contain at least one non-numeric character
+    if (/^\d+$/.test(formData.password)) {
+      alert('Password must contain at least one character other than numbers');
+      return;
+    }
+    // Basic validation: Password must be at least 8 characters
+    if (formData.password.length < 8) {
+      alert('Password must be at least 8 characters long');
+      return;
+    }
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match');
       return;

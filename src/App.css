@@ -16,7 +16,79 @@
   border: none;
   background-color: transparent;
 }
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-image: none;
+  color: inherit;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+}
 
+.carousel-control-prev-icon::after {
+  content: '‹'; /* Left arrow */
+  font-size:15rem;
+  color: green;  /* Matches text-success */
+}
+
+.carousel-control-next-icon::after {
+  content: '›'; /* Right arrow */
+  font-size:15rem;
+  color: red;   /* Matches text-danger */
+}
+@media (max-width: 992px) {
+  .carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-image: none;
+  color: inherit;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.carousel-control-prev-icon::after {
+  content: '‹'; /* Left arrow */
+  font-size:10rem;
+  color: green;  /* Matches text-success */
+}
+
+.carousel-control-next-icon::after {
+  content: '›'; /* Right arrow */
+  font-size:10rem;
+  color: red;   /* Matches text-danger */
+}
+}
+@media (max-width: 425px) {
+   .carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-image: none;
+  color: inherit;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.carousel-control-prev-icon::after {
+  content: '‹'; /* Left arrow */
+  font-size:5rem;
+  color: green;  /* Matches text-success */
+}
+
+.carousel-control-next-icon::after {
+  content: '›'; /* Right arrow */
+  font-size:5rem;
+  color: red;   /* Matches text-danger */
+}
+}
 :root {
   --bg-primary: #0a0a0a;
   --bg-secondary: #121212;

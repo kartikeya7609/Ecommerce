@@ -63,7 +63,7 @@ export default function HeroSection() {
           <i className="fas fa-map-marker-alt me-2"></i>Delivering Across India
         </p>
 
-        <a href="#products" className="btn cta-button mt-4">
+        <a href="/home" className="btn cta-button mt-4">
           <i className="fas fa-arrow-right me-2"></i>Start Shopping
         </a>
       </div>
