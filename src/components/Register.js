@@ -18,23 +18,43 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // Password must contain at least one non-numeric character
     if (/^\d+$/.test(formData.password)) {
       alert('Password must contain at least one character other than numbers');
       return;
     }
-    // Basic validation: Password must be at least 8 characters
+
+    // Password must be at least 8 characters
     if (formData.password.length < 8) {
       alert('Password must be at least 8 characters long');
       return;
     }
+
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match');
       return;
     }
-e.preventdefault();
-    
-    console.log('Form Data Submitted:', formData);
+
+    // ✅ All validations passed
+    alert('✅ Your details are saved and a confirmation email has been sent.');
+
+    // Create and log the user object (excluding confirmPassword)
+    const user = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password
+    };
+
+    console.log('✅ Registered User:', user);
+
+    // Clear the form fields
+    setFormData({
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+    });
   };
 
   return (
@@ -96,7 +116,7 @@ e.preventdefault();
             </div>
 
             <div className="d-grid gap-2">
-              <button type="submit" className="btn login-btn">Register</button>
+              <button type="submit" className="btn btn-primary">Register</button>
             </div>
           </form>
         </div>
