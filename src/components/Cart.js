@@ -124,7 +124,7 @@ const styles = {
     backgroundSize: "cover",
     color: "#ffffff",
     minHeight: "100vh",
-    padding: "8rem 1.5rem 3rem 1.5rem",
+    padding: "1rem 1.5rem 3rem 1.5rem",
     fontFamily: "Segoe UI, sans-serif",
     transition: "all 0.3s ease",
   },

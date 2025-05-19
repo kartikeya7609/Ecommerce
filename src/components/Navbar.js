@@ -1,13 +1,33 @@
-import "../App.css";
+import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
 
 export default function Navbar() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    const res = await fetch("https://fakestoreapi.com/products");
+    const products = await res.json();
+    const match = products.find((p) =>
+      p.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    if (match) {
+      navigate(`/product/${match.id}`);
+    } else {
+      alert("No matching product found");
+    }
+  };
+
   return (
-    <div>
-      <nav className="navbar navbar-expand-lg custom-navbar sticky-top">
+    <>
+      <div style={{ height: "70px" }}></div>
+
+      <nav className="navbar navbar-expand-lg custom-navbar fixed-top bg-dark">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
+          <Link className="navbar-brand text-white" to="/">
             ShopSphere
-          </a>
+          </Link>
           <button
             className="navbar-toggler mobile-menu-btn"
             type="button"
@@ -23,40 +43,59 @@ export default function Navbar() {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="nav-links navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <a className="nav-link" href="/">
+                <Link className="nav-link text-white" to="/">
                   <i className="fas fa-info-circle"></i> About
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/home">
+                <Link
+                  className="nav-link active text-white"
+                  aria-current="page"
+                  to="/home"
+                >
                   <i className="fas fa-store"></i> Home
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/cart">
+                <Link className="nav-link text-white" to="/cart">
                   <i className="fas fa-shopping-cart"></i> Cart
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/login">
+                <Link className="nav-link text-white" to="/login">
                   <i className="fa-solid fa-right-to-bracket"></i> Login
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/register">
-                  <i className="fa-solid fa-right-to-bracket"></i>
+                <Link className="nav-link text-white" to="/register">
+                  <i className="fa-solid fa-right-to-bracket"></i>{" "}
                   <b>Register Here</b>
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/contact">
+                <Link className="nav-link text-white" to="/contact">
                   <i className="fas fa-phone"></i> Contact
-                </a>
+                </Link>
               </li>
             </ul>
+            <div className="d-flex gap-10px">
+              <form className="d-flex " role="search" onSubmit={handleSearch}>
+                <input
+                  className="form-control me-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button className="btn btn-outline-success" type="submit">
+                  Search
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </nav>
-    </div>
+    </>
   );
 }

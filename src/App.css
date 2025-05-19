@@ -24,6 +24,11 @@
   border: none;
   background-color: transparent;
 }
+.container-x{
+  display: flex;
+  
+  flex-direction: column;
+}
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   background-image: none;

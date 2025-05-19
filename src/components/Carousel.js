@@ -2,7 +2,7 @@ import React from "react";
 
 const Carousel = () => {
   return (
-    <div className="container pt-3">
+    <div className="container p-2">
       <div style={styles.page}>
         <div
           id="carouselExampleCaptions"
@@ -76,45 +76,48 @@ const Carousel = () => {
 };
 
 // Slide data
+// ...existing code...
+
+// Slide data
 const slides = [
   {
     image:
       "https://images-eu.ssl-images-amazon.com/images/G/31/sthaneka/SVM/ncq/2X_buasdhuif._CB795788272_.jpg",
-    title: "First slide label",
-    description: "Some representative placeholder content for the first slide.",
+    title: "Shop the Latest Electronics",
+    description: "Discover top deals on smartphones, laptops, and more.",
   },
   {
     image:
       "https://images-eu.ssl-images-amazon.com/images/G/31/img23/Beauty/GW/yesbank/Shampoos__conditioners_pc._CB796616147_.png",
-    title: "Second slide label",
-    description:
-      "Some representative placeholder content for the second slide.",
+    title: "Beauty & Personal Care",
+    description: "Explore trending beauty products and exclusive offers.",
   },
   {
     image:
       "https://images-eu.ssl-images-amazon.com/images/G/31/img21/MA2025/GW/BAU/Unrec/PC/934044815._CB551384116_.jpg",
-    title: "Third slide label",
-    description: "Some representative placeholder content for the third slide.",
+    title: "Fashion for Everyone",
+    description: "Upgrade your wardrobe with the latest styles.",
   },
   {
     image:
       "https://images-eu.ssl-images-amazon.com/images/G/31/img22/Wireless/devjyoti/GW/Uber/Nov/uber_new_high._CB537689643_.jpg",
-    title: "Fourth slide label",
-    description:
-      "Some representative placeholder content for the fourth slide.",
+    title: "Home Essentials",
+    description: "Find everything you need for a comfortable home.",
   },
   {
     image:
       "https://images-eu.ssl-images-amazon.com/images/G/31/img23/Consumables/X-GL/Feb5/PC_Hero_1_3000._CB582457311_.jpg",
-    title: "Fifth slide label",
-    description: "Some representative placeholder content for the fifth slide.",
+    title: "Daily Groceries",
+    description: "Shop fresh groceries and household supplies.",
   },
 ];
+
+// ...existing code...
 
 // Styles for the outer container
 const styles = {
   page: {
-    padding: "4rem 1rem 2rem",
+    padding: "1rem 1rem 1rem",
     background: "linear-gradient(to bottom right, #f0f4f8, #d9e2ec)",
     borderRadius: "16px",
     boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
