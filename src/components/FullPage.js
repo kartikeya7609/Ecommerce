@@ -91,7 +91,7 @@ const styles = {
     padding: "2rem",
     backgroundColor: "#fff",
     borderRadius: "12px",
-    boxShadow: "0 4px 24px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0 4px 24px rgba(9, 8, 8, 0.1)",
   },
   image: {
     width: "100%",
@@ -101,8 +101,7 @@ const styles = {
   },
   infoSection: {
     flex: "1 1 55%",
-    backgroundColor:
-      "lineargradient(135deg,rgb(77, 133, 165),rgb(46, 197, 19))",
+    backgroundColor: "rgba(87, 124, 158, 0.9)",
     padding: "2rem",
     borderRadius: "12px",
     boxShadow: "0 4px 24px rgba(0, 0, 0, 0.08)",
