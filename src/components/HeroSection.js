@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
-import '../App.css';
+import React, { useEffect } from "react";
+import "../App.css";
 
 export default function HeroSection() {
- 
   useEffect(() => {
-    const typingText = document.querySelector('.typing-text');
+    const typingText = document.querySelector(".typing-text");
     const texts = [
       "Great Deals Every Day",
       "Fast & Free Delivery",
       "Trusted by Thousands",
-      "Shop Smart with ShopSphere"
+      "Shop Smart with ShopSphere",
     ];
     let currentTextIndex = 0;
     let currentCharIndex = 0;
@@ -45,13 +44,17 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section id="home" className="hero d-flex align-items-center justify-content-center text-center text-white">
+    <section
+      id="home"
+      className="hero d-flex align-items-center justify-content-center text-center text-white"
+    >
       <div className="hero-content container">
         <h1 className="display-4 fw-bold">
           Welcome to <span className="highlight">ShopSphere</span>
         </h1>
         <p className="subtitle fs-4">
-          <i className="fas fa-shopping-cart me-2"></i>Electronics, Fashion, Home & More
+          <i className="fas fa-shopping-cart me-2"></i>Electronics, Fashion,
+          Home & More
         </p>
 
         <div className="typing-container">
@@ -66,9 +69,12 @@ export default function HeroSection() {
         <a href="/home" className="btn cta-button mt-4">
           <i className="fas fa-arrow-right me-2"></i>Start Shopping
         </a>
+        <p className="mt-3 para">
+          ShopSphere: A sleek, modern shopping platform offering curated
+          products, seamless experience, vibrant design, and effortless cart
+          management with style.
+        </p>
       </div>
     </section>
   );
 }
-
-
