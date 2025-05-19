@@ -100,6 +100,14 @@ const Cart = () => {
             <button style={styles.clearBtn} onClick={clearCart}>
               🧹 Clear Cart
             </button>
+            <button
+              style={styles.clearBtn}
+              onClick={() =>
+                alert(`you have to pay ${getTotal()} bucks only!!`)
+              }
+            >
+              💳 Checkout
+            </button>
           </div>
         </>
       )}
@@ -203,6 +211,7 @@ const styles = {
     color: "#fff",
     padding: "10px 20px",
     marginTop: "1rem",
+    marginRight: "1rem",
     fontSize: "1rem",
     borderRadius: "10px",
     cursor: "pointer",

@@ -93,6 +93,7 @@ const ProductCard = ({ product, addToCart }) => {
         onClick={(e) => {
           e.stopPropagation();
           addToCart(product);
+          alert("Item added to cart");
         }}
       >
         Add To Cart
@@ -103,7 +104,6 @@ const ProductCard = ({ product, addToCart }) => {
 
 const styles = {
   page: {
-    background: `url("https://images.unsplash.com/photo-1526403226271-3e4fdc6c7795") center/cover no-repeat`,
     minHeight: "100vh",
     padding: "4rem 2rem",
     backdropFilter: "blur(6px)",
@@ -138,6 +138,7 @@ const styles = {
     color: "white",
     transition: "transform 0.3s ease, box-shadow 0.3s ease",
     cursor: "pointer",
+    position: "relative", // Needed for absolute toast
   },
   cardHover: {
     transform: "scale(1.05)",
@@ -184,8 +185,8 @@ const styles = {
     color: "#fff",
   },
   toast: {
-    position: "fixed",
-    top: "20px",
+    position: "relative",
+    top: "10px",
     left: "50%",
     transform: "translateX(-50%)",
     backgroundColor: "#28a745",
@@ -198,6 +199,7 @@ const styles = {
     zIndex: 1050,
     opacity: 1,
     transition: "opacity 0.5s ease-in-out",
+    pointerEvents: "auto",
   },
   toastHidden: {
     opacity: 0,
