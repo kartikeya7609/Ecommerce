@@ -506,55 +506,6 @@ footer {
 }
 /* Login PAGE CODE*/
 
-.login-container {
-  background-color: var(--bg-secondary);
-  padding: 2rem;
-  width: 100%;
-}
-
-.login-card {
-  background-color: var(--card-bg);
-  color: var(--text-primary);
-  max-width: 400px;
-  width: 100%;
-  border: 1px solid var(--border-color);
-}
-
-.login-title {
-  font-weight: 600;
-  color:#00ffff;
-}
-
-.form-label {
-  color: var(--text-secondary);
-}
-.form-control{
-  background: transparent;
-  border: 1px solid var(--border-color);
-}
-.form-control:focus {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 10px var(--accent-color);
-    background: transparent;
-  color: var(--text-primary);
-}
-.login-btn {
-  background-color: var(--accent-color);
-  color: var(--bg-primary);
-  border: none;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.login-btn:hover {
-  background-color: var(--accent-hover);
-  box-shadow: var(--neon-glow);
-}
-
-.login-footer {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
 /*forgot password*/
 .forgot-container {
   background-color: var(--bg-secondary);

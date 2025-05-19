@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "../App.css";
+import "./HeroSection.css"; // Link your custom CSS
 
 export default function HeroSection() {
   useEffect(() => {
@@ -44,32 +44,27 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section
-      id="home"
-      className="hero d-flex align-items-center justify-content-center text-center text-white"
-    >
-      <div className="hero-content container">
-        <h1 className="display-4 fw-bold">
-          Welcome to <span className="highlight">ShopSphere</span>
+    <section className="hero-section d-flex align-items-center justify-content-center text-white login-bg">
+      <div className="overlay"></div>
+      <div className="container text-center content">
+        <h1 className="display-3 fw-bold mb-3">
+          Welcome to <span className="text-highlight">ShopSphere</span>
         </h1>
-        <p className="subtitle fs-4">
+        <p className="lead fs-4 mb-3">
           <i className="fas fa-shopping-cart me-2"></i>Electronics, Fashion,
           Home & More
         </p>
-
-        <div className="typing-container">
+        <div className="typing-container mb-3">
           <span className="typing-text"></span>
           <span className="typing-cursor">|</span>
         </div>
-
-        <p className="location mt-3">
+        <p className="mb-4">
           <i className="fas fa-map-marker-alt me-2"></i>Delivering Across India
         </p>
-
-        <a href="/home" className="btn cta-button mt-4">
+        <a href="/home" className="btn btn-primary btn-lg shadow">
           <i className="fas fa-arrow-right me-2"></i>Start Shopping
         </a>
-        <p className="mt-3 para">
+        <p className="mt-4 description">
           ShopSphere: A sleek, modern shopping platform offering curated
           products, seamless experience, vibrant design, and effortless cart
           management with style.
