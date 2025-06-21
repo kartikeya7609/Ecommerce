@@ -31,7 +31,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="social-app"
             >
-              <i class="fa-solid fa-x"></i>
+              <i className="fa-solid fa-x"></i>
               <span>X</span>
             </a>
             <a

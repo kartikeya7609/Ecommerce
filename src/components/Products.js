@@ -1,210 +1,211 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import "./Products.css"; // Make sure to create this CSS file
 
-const Home = () => {
+const API_URL = "https://fakestoreapi.com/products";
+const BACKEND_API_BASE = "http://localhost:3002/api";
+const BACKEND_CART_API = `${BACKEND_API_BASE}/cart`;
+
+const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState([]);
   const [toastVisible, setToastVisible] = useState(false);
-
-  const API_URL = "https://fakestoreapi.com/products";
+  const [toastMessage, setToastMessage] = useState("");
+  const { user, token, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const storedCartItems = JSON.parse(localStorage.getItem("cartItems"));
-    if (storedCartItems) {
-      setCartItems(storedCartItems);
+    const loadData = async () => {
+      try {
+        // Fetch products
+        const productsResponse = await fetch(API_URL);
+        if (!productsResponse.ok) throw new Error("Failed to fetch products");
+        const productsData = await productsResponse.json();
+        setProducts(productsData);
+
+        // Check authentication and fetch cart
+        if (isAuthenticated && user?.id && token) {
+          await fetchCartFromBackend(user.id, token);
+        } else {
+          // Load from local storage if not authenticated
+          const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+          setCartItems(localCart);
+        }
+      } catch (error) {
+        console.error("Error loading data:", error);
+        showToast("Failed to load products. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [isAuthenticated, user, token]);
+
+  const fetchCartFromBackend = async (userId, token) => {
+    try {
+      // Use the correct endpoint - just BACKEND_CART_API without userId
+      const res = await fetch(`${BACKEND_CART_API}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      if (!res.ok) throw new Error("Failed to fetch cart");
+
+      const cartData = await res.json();
+      console.log('Cart data fetched successfully:', cartData);
+      setCartItems(cartData.items || []);
+      localStorage.setItem("cartItems", JSON.stringify(cartData.items || []));
+    } catch (err) {
+      console.error("Cart fetch error:", err);
+      const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+      setCartItems(localCart);
+      if (err.message !== "No authentication token") {
+        showToast("Couldn't load cart from server. Using local data.");
+      }
+    }
+  };
+
+  const handleUnauthorized = () => {
+    showToast("Session expired. Please login again.");
+    navigate("/login");
+  };
+
+  const showToast = (message, duration = 2000) => {
+    setToastMessage(message);
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), duration);
+  };
+
+  const addToCart = async (product) => {
+    if (!isAuthenticated || !user) {
+      showToast("Please login to add items to cart", 3000);
+      navigate("/login");
+      return;
     }
 
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-        setLoading(false);
-      });
-  }, []);
+    const existingItemIndex = cartItems.findIndex(
+      (item) => item.id === product.id
+    );
+    let updatedCart;
 
-  const addToCart = (product) => {
-    const updatedCart = [...cartItems, product];
+    if (existingItemIndex >= 0) {
+      updatedCart = [...cartItems];
+      updatedCart[existingItemIndex].quantity += 1;
+    } else {
+      updatedCart = [...cartItems, { ...product, quantity: 1 }];
+    }
+
     setCartItems(updatedCart);
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
 
-    setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 2000);
+    try {
+      const response = await fetch(`${BACKEND_CART_API}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productId: product.id,
+          title: product.title,
+          price: product.price,
+          image: product.image,
+          quantity:
+            existingItemIndex >= 0
+              ? updatedCart[existingItemIndex].quantity
+              : 1,
+        }),
+      });
+
+      if (response.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update cart");
+      }
+
+      showToast("Item added to cart!");
+    } catch (error) {
+      console.error("Cart update error:", error);
+      // Revert to previous cart state
+      setCartItems(cartItems);
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      showToast(error.message || "Failed to update cart. Please try again.");
+    }
   };
 
-  return (
-    <div style={styles.page}>
-      <h1 style={styles.heading}>🧊 Our Glassy Products</h1>
-
-      {/* Toast Message */}
-      <div
-        style={{ ...styles.toast, ...(toastVisible ? {} : styles.toastHidden) }}
-      >
-        ✅ Item added to cart!
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading products...</p>
       </div>
+    );
+  }
 
-      {loading ? (
-        <p style={styles.loading}>Loading products...</p>
-      ) : (
-        <div style={styles.grid}>
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              addToCart={addToCart}
-            />
-          ))}
+  return (
+    <div className="products-page">
+      {isAuthenticated && user && (
+        <div className="user-email">Logged in as: {user.email}</div>
+      )}
+
+      {toastVisible && (
+        <div className={`toast ${toastVisible ? "show" : ""}`}>
+          {toastMessage}
         </div>
       )}
+
+      <h1 className="products-heading">Our Products</h1>
+
+      <div className="products-grid">
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="product-card"
+            onClick={() => navigate(`/product/${product.id}`)}
+          >
+            <img
+              src={product.image}
+              alt={product.title}
+              className="product-image"
+            />
+            <h2 className="product-title">{product.title}</h2>
+            <p className="product-description">
+              {product.description.length > 100
+                ? `${product.description.substring(0, 100)}...`
+                : product.description}
+            </p>
+            <p className="product-price">${product.price}</p>
+            <button
+              className={`add-to-cart-btn ${
+                !isAuthenticated ? "disabled" : ""
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                addToCart(product);
+              }}
+              disabled={!isAuthenticated}
+            >
+              {isAuthenticated ? "Add To Cart" : "Login to Add"}
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
-const ProductCard = ({ product, addToCart }) => {
-  const [hover, setHover] = useState(false);
-  const [buttonHover, setButtonHover] = useState(false);
-
-  return (
-    <div
-      style={{
-        ...styles.card,
-        ...(hover ? styles.cardHover : {}),
-      }}
-      onClick={() => {
-        window.location.href = `/product/${product.id}`;
-      }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
-      <img src={product.image} alt={product.title} style={styles.image} />
-      <h2 style={styles.title}>{product.title}</h2>
-      <p style={styles.description}>{product.description.slice(0, 100)}...</p>
-      <p style={styles.price}>${product.price}</p>
-      <button
-        style={{
-          ...styles.button,
-          ...(buttonHover ? styles.buttonHover : {}),
-        }}
-        onMouseEnter={() => setButtonHover(true)}
-        onMouseLeave={() => setButtonHover(false)}
-        onClick={(e) => {
-          e.stopPropagation();
-          addToCart(product);
-          alert("Item added to cart");
-        }}
-      >
-        Add To Cart
-      </button>
-    </div>
-  );
-};
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    padding: "4rem 2rem",
-    backdropFilter: "blur(6px)",
-  },
-  heading: {
-    fontSize: "2.8rem",
-    textAlign: "center",
-    marginBottom: "3rem",
-    color: "white",
-    fontWeight: 700,
-    textShadow: "0 0 10px rgba(0,0,0,0.5)",
-  },
-  loading: {
-    textAlign: "center",
-    fontSize: "1.2rem",
-    color: "#eee",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    gap: "2rem",
-    padding: "0 1rem",
-  },
-  card: {
-    backdropFilter: "blur(10px)",
-    background: "rgba(255, 255, 255, 0.12)",
-    borderRadius: "16px",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-    boxShadow: "0 8px 32px rgba(31, 38, 135, 0.7)",
-    padding: "1.2rem",
-    textAlign: "center",
-    color: "white",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    cursor: "pointer",
-    position: "relative", // Needed for absolute toast
-  },
-  cardHover: {
-    transform: "scale(1.05)",
-    boxShadow: "0 12px 24px rgba(255,255,255,1)",
-  },
-  image: {
-    width: "100%",
-    height: "200px",
-    objectFit: "contain",
-    borderRadius: "12px",
-    marginBottom: "1rem",
-  },
-  title: {
-    fontSize: "1.1rem",
-    fontWeight: "600",
-    margin: "1rem 0 0.5rem",
-  },
-  description: {
-    fontSize: "0.85rem",
-    color: "#ddd",
-    marginBottom: "0.8rem",
-  },
-  price: {
-    fontSize: "1.2rem",
-    fontWeight: "bold",
-    marginBottom: "1rem",
-    color: "#f1f1f1",
-  },
-  button: {
-    background: "#00ff9d",
-    border: "none",
-    color: "white",
-    transition: "background 0.3s",
-    padding: "0.5rem 1.5rem",
-    borderRadius: "8px",
-    fontSize: "1rem",
-    fontWeight: "500",
-    cursor: "pointer",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    marginTop: "1rem",
-  },
-  buttonHover: {
-    background: "#00e68a",
-    color: "#fff",
-  },
-  toast: {
-    position: "relative",
-    top: "10px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    backgroundColor: "#28a745",
-    color: "#fff",
-    padding: "12px 24px",
-    borderRadius: "12px",
-    fontSize: "1rem",
-    fontWeight: "500",
-    boxShadow: "0 2px 12px rgba(0,0,0,0.3)",
-    zIndex: 1050,
-    opacity: 1,
-    transition: "opacity 0.5s ease-in-out",
-    pointerEvents: "auto",
-  },
-  toastHidden: {
-    opacity: 0,
-    pointerEvents: "none",
-  },
-};
-
-export default Home;
+export default Products;

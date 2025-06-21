@@ -1,67 +1,116 @@
-import React from "react";
-import "../App.css";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import { toast } from "react-toastify";
 import "./Login.css";
-export default function Login() {
+
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/user-profile", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const success = await login(formData.email, formData.password);
+      if (success) {
+        navigate("/user-profile", { replace: true });
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.error || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
-      <div className="login-container d-flex align-items-center justify-content-center vh-100 login-bg">
-        <div className="login-card p-5 rounded-5 shadow-lg text-white">
-          <h2 className="text-center mb-3 fw-bold">Welcome Back 👋</h2>
-          <p className="text-center mb-4">
-            Don't have an account?{" "}
-            <a href="/register" className="text-info fw-semibold">
-              Register Now
-            </a>
-          </p>
+    <div className="login-bg">
+      <div className="login-container">
+        <div className="login-card">
+          <div className="login-header">
+            <h2>Welcome Back 👋</h2>
+            <p>
+              Don't have an account?{" "}
+              <Link to="/register" className="register-link">
+                Register Now
+              </Link>
+            </p>
+          </div>
 
-          <form autoComplete="on">
-            <div className="form-floating mb-3">
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
               <input
-                type="text"
-                className="form-control bg-transparent text-white border-white"
-                id="username"
-                placeholder="Username"
+                id="email"
+                name="email"
+                type="email"
                 required
-                autoComplete="username"
-                style={{ backgroundColor: "rgba(255,255,255,0.05)" }}
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                autoComplete="email"
               />
-              <label htmlFor="username" className="text-white">
-                Username
-              </label>
             </div>
 
-            <div className="form-floating mb-4">
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
               <input
-                type="password"
-                className="form-control bg-transparent text-white border-white"
                 id="password"
-                placeholder="Password"
+                name="password"
+                type="password"
                 required
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
                 autoComplete="current-password"
-                style={{ backgroundColor: "rgba(255,255,255,0.05)" }}
               />
-              <label htmlFor="password" className="text-white">
-                Password
-              </label>
             </div>
 
-            <div className="d-grid">
-              <button
-                type="submit"
-                className="btn btn-outline-light fw-semibold py-2"
-              >
-                Login
-              </button>
+            <div className="form-footer">
+              <Link to="/forgot-password" className="forgot-password">
+                Forgot your password?
+              </Link>
             </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`login-button ${loading ? "loading" : ""}`}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner"></span>
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
+            </button>
           </form>
-
-          <p className="text-center mt-4">
-            <a href="/forgot" className="text-light text-decoration-underline">
-              Forgot your password?
-            </a>
-          </p>
         </div>
       </div>
-    </>
+    </div>
   );
-}
+};
+
+export default Login;

@@ -1,30 +1,49 @@
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState } from "react";
+import { useAuth } from "./AuthContext";
+import "../App.css";
+import "./Navbar.css";
 
 export default function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    const res = await fetch("https://fakestoreapi.com/products");
-    const products = await res.json();
-    const match = products.find((p) =>
-      p.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    if (match) {
-      navigate(`/product/${match.id}`);
-    } else {
-      alert("No matching product found");
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("https://fakestoreapi.com/products");
+      if (!res.ok) throw new Error("Network response was not ok");
+      const products = await res.json();
+      const match = products.find((p) =>
+        p.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      if (match) {
+        navigate(`/product/${match.id}`);
+      } else {
+        alert("No matching product found");
+      }
+    } catch (err) {
+      setError("Failed to fetch products. Please try again later.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
   };
 
   return (
     <>
       <div style={{ height: "70px" }}></div>
-
       <nav className="navbar navbar-expand-lg custom-navbar fixed-top bg-dark">
-        <div className="container-fluid">
+        <div className="container">
           <Link className="navbar-brand text-white" to="/">
             ShopSphere
           </Link>
@@ -48,30 +67,45 @@ export default function Navbar() {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link
-                  className="nav-link active text-white"
-                  aria-current="page"
-                  to="/home"
-                >
+                <Link className="nav-link text-white" to="/home">
                   <i className="fas fa-store"></i> Home
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/cart">
-                  <i className="fas fa-shopping-cart"></i> Cart
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/login">
-                  <i className="fa-solid fa-right-to-bracket"></i> Login
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/register">
-                  <i className="fa-solid fa-right-to-bracket"></i>{" "}
-                  <b>Register Here</b>
-                </Link>
-              </li>
+              {isAuthenticated ? (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to="/cart">
+                      <i className="fas fa-shopping-cart"></i> Cart
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to="/user-profile">
+                      <i className="fas fa-user"></i> Profile
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <button
+                      className="nav-link text-white border-0 bg-transparent"
+                      onClick={handleLogout}
+                    >
+                      <i className="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to="/login">
+                      <i className="fa-solid fa-right-to-bracket"></i> Login
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to="/register">
+                      <i className="fa-solid fa-user-plus"></i> Register
+                    </Link>
+                  </li>
+                </>
+              )}
               <li className="nav-item">
                 <Link className="nav-link text-white" to="/contact">
                   <i className="fas fa-phone"></i> Contact
@@ -79,7 +113,7 @@ export default function Navbar() {
               </li>
             </ul>
             <div className="d-flex gap-10px">
-              <form className="d-flex " role="search" onSubmit={handleSearch}>
+              <form className="d-flex" role="search" onSubmit={handleSearch}>
                 <input
                   className="form-control me-2"
                   type="search"
@@ -88,10 +122,15 @@ export default function Navbar() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <button className="btn btn-outline-success" type="submit">
-                  Search
+                <button
+                  className="btn btn-outline-success"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? "Searching..." : "Search"}
                 </button>
               </form>
+              {error && <div className="error-message">{error}</div>}
             </div>
           </div>
         </div>

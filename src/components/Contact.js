@@ -1,21 +1,142 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 import "../App.css";
 import "./Contact.css";
+
 const ContactPage = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState({ type: "", message: "" });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!isAuthenticated) {
+      setStatus({
+        type: "error",
+        message: "Please login to send a message",
+      });
+      setTimeout(() => navigate("/login"), 2000);
+      return;
+    }
+
+    setLoading(true);
+    setStatus({ type: "", message: "" });
+
+    try {
+      const res = await fetch("http://localhost:3002/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        setStatus({
+          type: "success",
+          message: "✅ Message sent successfully!",
+        });
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setStatus({
+          type: "error",
+          message: `❌ ${result.error || "Failed to send message"}`,
+        });
+      }
+    } catch (err) {
+      console.error("Contact form error:", err);
+      setStatus({
+        type: "error",
+        message: "❌ Failed to send message. Please try again later.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={styles.wrapper} className="contact-bg">
       <div style={styles.container}>
         <h1 style={styles.heading}>Contact Us</h1>
-        <form style={styles.form}>
-          <input type="text" placeholder="Your Name" style={styles.input} />
-          <input type="email" placeholder="Your Email" style={styles.input} />
+
+        {status.message && (
+          <div
+            style={{
+              marginBottom: "1rem",
+              color: status.type === "error" ? "#ff6b6b" : "#00f5c3",
+              fontWeight: "bold",
+              textAlign: "center",
+              padding: "1rem",
+              borderRadius: "8px",
+              backgroundColor:
+                status.type === "error"
+                  ? "rgba(255, 107, 107, 0.1)"
+                  : "rgba(0, 245, 195, 0.1)",
+              border: `1px solid ${
+                status.type === "error" ? "#ff6b6b" : "#00f5c3"
+              }`,
+            }}
+          >
+            {status.message}
+          </div>
+        )}
+
+        <form style={styles.form} onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={formData.name}
+            onChange={handleChange}
+            style={styles.input}
+            required
+            disabled={!isAuthenticated}
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            value={formData.email}
+            onChange={handleChange}
+            style={styles.input}
+            required
+            disabled={!isAuthenticated}
+          />
           <textarea
+            name="message"
             placeholder="Your Message"
             rows="5"
+            value={formData.message}
+            onChange={handleChange}
             style={styles.textarea}
+            required
+            disabled={!isAuthenticated}
           ></textarea>
-          <button type="submit" style={styles.button}>
-            Send Message
+          <button
+            type="submit"
+            style={styles.button}
+            disabled={loading || !isAuthenticated}
+          >
+            {loading
+              ? "Sending..."
+              : isAuthenticated
+              ? "Send Message"
+              : "Please Login to Send Message"}
           </button>
         </form>
       </div>

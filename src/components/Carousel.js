@@ -117,7 +117,7 @@ const slides = [
 // Styles for the outer container
 const styles = {
   page: {
-    padding: "1rem 1rem 1rem",
+    padding: "1rem 1rem 1rem 1rem",
     background: "linear-gradient(to bottom right, #f0f4f8, #d9e2ec)",
     borderRadius: "16px",
     boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",

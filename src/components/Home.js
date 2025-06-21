@@ -6,8 +6,10 @@ export default function Home() {
     <>
       <div className="container">
         <Carousel />
-        <h1 className="text-center my-4 ">Welcome to ShopSphere</h1>
-        <p className="text-center ">Your one-stop shop for all your needs!</p>
+        <h1 className="text-center my-4 text-white ">Welcome to ShopSphere</h1>
+        <p className="text-center text-white">
+          Your one-stop shop for all your needs!
+        </p>
         <Products />
       </div>
     </>

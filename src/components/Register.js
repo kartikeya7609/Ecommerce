@@ -1,13 +1,19 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 import "../App.css";
+import "./Login.css";
 
 function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,80 +23,181 @@ function Register() {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Password must contain at least one non-numeric character
-    if (/^\d+$/.test(formData.password)) {
-      alert("Password must contain at least one character other than numbers");
-      return;
+  const validateForm = () => {
+    if (!formData.name || !formData.email || !formData.password) {
+      toast.error("All fields are required");
+      return false;
     }
 
-    // Password must be at least 8 characters
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+
     if (formData.password.length < 8) {
-      alert("Password must be at least 8 characters long");
-      return;
+      toast.error("Password must be at least 8 characters long");
+      return false;
+    }
+
+    if (!/[A-Z]/.test(formData.password)) {
+      toast.error("Password must contain at least one uppercase letter");
+      return false;
+    }
+
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+      toast.error("Password must contain at least one special character");
+      return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
-      return;
+      toast.error("Passwords do not match");
+      return false;
     }
 
-    // ✅ All validations passed
-    alert("✅ Your details are saved and a confirmation email has been sent.");
+    return true;
+  };
 
-    // Create and log the user object (excluding confirmPassword)
-    const user = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-    console.log("✅ Registered User:", user);
+    setIsLoading(true);
 
-    // Clear the form fields
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
+    try {
+      const response = await axios.post(
+        "http://localhost:3002/api/auth/register",
+        {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      toast.success("✅ Registration successful! Please login.");
+      console.log("Server response:", response.data);
+
+      // Clear form and redirect to login
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration error:", error);
+
+      let errorMessage = "Registration failed. Please try again.";
+
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        errorMessage =
+          error.response.data.error ||
+          error.response.data.message ||
+          errorMessage;
+      } else if (error.request) {
+        // The request was made but no response was received
+        errorMessage = "No response from server. Please check your connection.";
+      }
+
+      toast.error(`❌ ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="vh-100 d-flex justify-content-center align-items-center register-bg">
-      <div className="register-card p-5 rounded-4 shadow-lg">
-        <h2 className="text-center mb-4 text-white fw-bold">Create Account</h2>
-        <form onSubmit={handleSubmit}>
-          {["name", "email", "password", "confirmPassword"].map((field) => (
-            <div className="form-floating mb-3" key={field}>
-              <input
-                type={field.includes("password") ? "password" : "text"}
-                className="form-control bg-transparent text-white border-light"
-                id={field}
-                name={field}
-                placeholder={field}
-                value={formData[field]}
-                onChange={handleChange}
-                required
-              />
-              <label htmlFor={field} className="text-white">
-                {field
-                  .replace(/([A-Z])/g, " $1")
-                  .replace(/^./, (s) => s.toUpperCase())}
-              </label>
-            </div>
-          ))}
+    <div className="login-bg">
+      <div className="login-card">
+        <div className="login-header">
+          <h2>Create Account</h2>
+          <p>
+            Already have an account?{" "}
+            <Link to="/login" className="register-link">
+              Login Now
+            </Link>
+          </p>
+        </div>
 
-          <div className="d-grid mt-4">
-            <button
-              type="submit"
-              className="btn btn-outline-light btn-lg fw-semibold"
-            >
-              Register
-            </button>
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              placeholder="Enter your name"
+              value={formData.name}
+              onChange={handleChange}
+              autoComplete="name"
+            />
           </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              autoComplete="new-password"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              required
+              placeholder="Confirm your password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              autoComplete="new-password"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`login-button ${isLoading ? "loading" : ""}`}
+          >
+            {isLoading ? (
+              <>
+                <span className="spinner"></span>
+                Registering...
+              </>
+            ) : (
+              "Register"
+            )}
+          </button>
         </form>
       </div>
     </div>
