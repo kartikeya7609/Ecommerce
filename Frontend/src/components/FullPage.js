@@ -10,15 +10,7 @@ const BACKEND_CART_API =
 const ProductPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const tokenFromStorage = localStorage.getItem("token");
-  const userFromStorage = (() => {
-    try {
-      return JSON.parse(localStorage.getItem("user"));
-    } catch {
-      return null;
-    }
-  })();
-
+  const token = localStorage.getItem("token");
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -31,7 +23,6 @@ const ProductPage = () => {
       return [];
     }
   });
-  const token = tokenFromStorage;
   const showToast = (msg, delay = 2000) => {
     toast.info(msg, { autoClose: delay });
   };
