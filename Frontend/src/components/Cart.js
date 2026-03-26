@@ -5,7 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Cart.css";
 import { useAuth } from "./AuthContext";
-import { motion, AnimatePresence, vh } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 
 
@@ -31,6 +31,7 @@ const Cart = () => {
     } else {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user, token]);
 
   const fetchCartItems = async (email, token) => {
@@ -411,7 +412,7 @@ const clearCart = async () => {
               <div className="total-line"><strong>Total</strong> <strong>${getTotal()}</strong></div>
               <button className="btn primary" style={{ width: '100%', marginTop: 12 }} onClick={handleCheckout} disabled={loading || cartItems.length === 0}>Proceed to Checkout</button>
 
-              <div className="help muted small" style={{ marginTop: 12 }}>Need help? <a href="#" onClick={(e)=>{e.preventDefault(); toast.info('Contact support at support@example.com')}}>Contact support</a></div>
+              <div className="help muted small" style={{ marginTop: 12 }}>Need help? <button className="link" onClick={(e)=>{e.preventDefault(); toast.info('Contact support at support@example.com')}}>Contact support</button></div>
             </div>
           </aside>
         </div>
@@ -550,45 +551,7 @@ const styles = {
   },
 };
 
-const componentCss = `
-.cp-root { --accent: #00d0ff; }
-.cp-hero { display:flex; justify-content:space-between; align-items:center; gap:12px }
-.cp-sub { color: rgba(255,255,255,0.65); margin:4px 0 0 }
-.cp-actions { display:flex; gap:8px }
-.btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--accent);cursor:pointer;font-weight:700}
-.btn.primary{background:linear-gradient(90deg,#00c3ff,#3a7bd5);color:#042b40;border:none;box-shadow:0 6px 18px rgba(58,123,213,0.14)}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#cfefff}
-.btn.glass{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
 
-.cp-empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:28px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005))}
-.muted{color:rgba(255,255,255,0.65)}
-.small{font-size:13px}
-
-.cp-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;margin-top:18px}
-@media (max-width:900px){ .cp-grid{grid-template-columns:1fr} }
-
-.cp-list{display:flex;flex-direction:column;gap:14px}
-.cp-card{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
-.cp-img{width:160px;height:120px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,0.02);padding:8px}
-.cp-meta{flex:1;display:flex;flex-direction:column;gap:8px}
-.cp-top{display:flex;justify-content:space-between;align-items:flex-start}
-.cp-title{margin:0;font-size:1rem}
-.cp-price .big{color:var(--accent);font-weight:800}
-
-.cp-controls{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.qty{display:flex;align-items:center;gap:8px}
-.qty button{width:40px;height:36px;border-radius:10px;border:none;background:rgba(255,255,255,0.03);cursor:pointer;font-weight:800}
-.qty .num{min-width:36px;text-align:center;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.02)}
-.row-actions{display:flex;gap:10px}
-.row-actions .link{background:transparent;border:none;color:rgba(255,255,255,0.8);cursor:pointer}
-
-.cp-footer{margin-top:8px}
-.cp-footer-inner{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.cp-footer-actions{display:flex;gap:8px}
-
-.cp-aside .cp-summary{padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid rgba(255,255,255,0.03)}
-.total-line{display:flex;justify-content:space-between;margin-top:8px}
-`;
 
 export default Cart;
 

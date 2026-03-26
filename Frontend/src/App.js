@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 
 function App() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
 

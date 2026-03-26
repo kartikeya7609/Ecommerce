@@ -42,6 +42,7 @@ const Products = () => {
     };
 
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user, token]);
 
   const fetchCartFromBackend = async (userId, token) => {

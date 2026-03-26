@@ -1,0 +1,7 @@
+{
+  "name": "ecommerce-root",
+  "private": true,
+  "scripts": {
+    "build": "cd Frontend && npm install && CI=false npm run build"
+  }
+}

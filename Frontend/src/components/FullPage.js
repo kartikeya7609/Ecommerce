@@ -31,9 +31,7 @@ const ProductPage = () => {
       return [];
     }
   });
-  const isAuthenticated = !!tokenFromStorage;
   const token = tokenFromStorage;
-  const user = userFromStorage;
   const showToast = (msg, delay = 2000) => {
     toast.info(msg, { autoClose: delay });
   };
