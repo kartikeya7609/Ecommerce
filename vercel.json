@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "buildCommand": "cd Frontend && npm install && npm run build",
+  "outputDirectory": "Frontend/build",
+  "devCommand": "cd Frontend && npm start",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
